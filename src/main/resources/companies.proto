@@ -1,0 +1,156 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+
+option java_package = "com.berza.grpc";
+option java_multiple_files = true;
+
+
+service BerzaService{
+	rpc Report(SubscriptionRequest) returns (CompanyList) {}
+	rpc Ask(AskReq) returns (AskList) {}
+	rpc RegisterClient(ClientInfo) returns (RegisterResponse) {}
+    rpc UpdateStockAmounts(UpdateStockAmountsRequest) returns (UpdateStockAmountsResponse) {}
+    rpc PlaceOrder(OrderRequest) returns (OrderResponse) {}
+    rpc AcceptOrder(OrderRequest) returns (OrderResponse) {}
+    rpc DeclineOrder(OrderRequest) returns (OrderResponse) {}
+	rpc Bid(None) returns (BidList) {}
+	rpc CheckOffers(OfferRequest) returns (OfferList);
+	rpc CancelOrder(OrderRequest) returns (OrderResponse);
+	
+	
+}
+
+
+message SubscriptionRequest{
+string ClientId = 1;
+repeated string Symbols = 2;
+}
+
+
+
+
+
+message Company {
+string Symbol = 1;
+string Name = 2;
+double Price = 3;
+double Change = 4;
+google.protobuf.Timestamp Date = 5;
+double PreviousPrice = 6;
+repeated double History = 7;
+}
+
+message CompanyList{
+repeated Company companies = 1;
+}
+
+
+
+
+message AskReq{
+string Symbol = 1;
+int32 Amount = 2;
+}
+
+message AskData {
+string Symbol = 1;
+double Price = 2;
+int32 Amount = 3;
+string clientId = 4;
+}
+
+message AskList {
+repeated AskData asks = 1;
+}
+
+
+
+
+
+message OrderRequest {
+    string buyerClientId = 1;
+    string sellerClientId = 2;
+    string symbol = 3;
+    double price = 4;
+    int32 quantity = 5;
+    bool status = 6;
+    string orderId = 7;
+}
+
+message OrderResponse {
+    bool success = 1;
+}
+
+
+message BidList {
+    repeated OrderRequest orders = 1;
+}
+
+message OfferRequest {
+    string buyerId = 1;
+}
+
+message OfferList {
+repeated OrderRequest offers = 1;
+}
+
+
+
+
+
+message ClientInfo {
+    string clientId = 1;
+    repeated StockInfo stocks = 2;
+}
+
+
+
+message RegisterResponse {
+    bool success = 1;
+}
+
+message StockInfo {
+    string symbol = 1;
+    int32 notForSale = 2;
+    int32 forSale = 3;
+}
+
+
+
+
+
+
+
+
+
+
+
+message UpdateStockAmountsRequest {
+    string clientId = 1;
+    string symbol = 2;
+    int32 newForSaleValue = 3;
+    int32 newNotForSaleValue = 4;
+}
+
+message UpdateStockAmountsResponse {
+    bool success = 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+message None{}
+
